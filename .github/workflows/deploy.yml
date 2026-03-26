@@ -7,9 +7,6 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_REPO: quanpham12/javapro
-      CONTAINER_PORT: 8080
 
     steps:
       - name: Checkout Code
@@ -33,7 +30,7 @@ jobs:
           context: .
           file: ./dockerfile
           push: true
-          tags: ${{ env.IMAGE_REPO }}:latest
+          tags: quanpham12/javapro:latest
 
       - name: Triển khai lên DevOps Classroom
         run: |
