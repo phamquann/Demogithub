@@ -39,6 +39,8 @@ jobs:
           SLOT: 1
           MAX_ATTEMPTS: 3
           RETRY_DELAY_SECONDS: 15
+          REQUEST_TIMEOUT_SECONDS: 180
+          CONNECT_TIMEOUT_SECONDS: 20
         run: |
           DEPLOY_URL="${{ secrets.DEPLOY_URL }}?repo=${REPO}&tag=latest&slot=${SLOT}&container_port=${CONTAINER_PORT}&strict_container_port=0"
           LAST_BODY=""
@@ -46,7 +48,7 @@ jobs:
 
           for attempt in $(seq 1 "${MAX_ATTEMPTS}"); do
             echo "Deploy attempt ${attempt}/${MAX_ATTEMPTS}"
-            RESPONSE=$(curl -sS -m 90 --connect-timeout 15 -w "\n%{http_code}" -X POST "${DEPLOY_URL}" || printf "\n000")
+            RESPONSE=$(curl -sS -m "${REQUEST_TIMEOUT_SECONDS}" --connect-timeout "${CONNECT_TIMEOUT_SECONDS}" -w "\n%{http_code}" -X POST "${DEPLOY_URL}" || printf "\n000")
             BODY=$(echo "${RESPONSE}" | sed '$d')
             CODE=$(echo "${RESPONSE}" | tail -n1)
 
